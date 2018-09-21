@@ -1,11 +1,9 @@
 <template>
   <div id="app">
     <div class="color-list">
-      <div
-        class="color-item" :style="{background: color.color}"
-        v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }"
-        :key="color.text"
-      ><div>{{color.text}}</div><div class="close-btn" @click="color.isInGroup=!color.isInGroup">{{color.isInGroup?'x':''}}</div></div>
+      <div class="color-item" :style="{background: color.color}" v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }" :key="color.text">
+        <div>{{color.text}}</div>
+        <div class="add-group-btn" @click="onClickAddGroupBtn(color)">{{color.isInGroup?'x':''}}</div></div>
     </div>
   </div>
 </template>
@@ -37,11 +35,6 @@
       })
 
       this.$dragging.$on('dragged', (obj) => {
-        if (!this.groupArr.length) {
-          this.groupArr = this.colors.filter(function (item) {
-            return item.isInGroup
-          })
-        }
         this.groupArr.forEach((item) => {
           if (item != obj.draged) {
             let oldIndex = this.colors.indexOf(item)
@@ -62,6 +55,14 @@
         this.groupArr.splice(0)
       })
     },
+    methods: {
+      onClickAddGroupBtn(item) {
+        item.isInGroup = !item.isInGroup
+        this.groupArr = this.colors.filter(function (item) {
+          return item.isInGroup
+        })
+      }
+    }
   }
 </script>
 
@@ -81,7 +82,7 @@
     position: relative;
   }
 
-  .color-item .close-btn {
+  .color-item .add-group-btn {
     position: absolute;
     left: 0;
     top: 0;
