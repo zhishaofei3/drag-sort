@@ -5,7 +5,7 @@
         class="color-item" :style="{background: color.color}"
         v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }"
         :key="color.text"
-      ><div>{{color.text}}</div><div class="close-btn" @click="item.isInGroup=!item.isInGroup">{{color.isInGroup?'x':''}}</div></div>
+      ><div>{{color.text}}</div><div class="close-btn" @click="color.isInGroup=!color.isInGroup">{{color.isInGroup?'x':''}}</div></div>
     </div>
   </div>
 </template>
