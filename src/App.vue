@@ -2,85 +2,66 @@
   <div id="app">
     <div class="color-list">
       <div
-        class="color-item"
+        class="color-item" :style="{background: color.color}"
         v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }"
         :key="color.text"
-      ><div>{{color.text}}</div><div class="close-btn" @click="onClickGroupBtn(color)">{{color.isInGroup?'x':''}}</div></div>
+      ><div>{{color.text}}</div><div class="close-btn" @click="item.isInGroup=!item.isInGroup">{{color.isInGroup?'x':''}}</div></div>
     </div>
   </div>
 </template>
 
 <script>
+  import Vue from 'vue'
   export default {
     name: 'app',
     data() {
       return {
-        dragObj: null,
         groupArr: [],
-        colors: [{
-          text: "1Aquamarine",
-          isInGroup: false,
-        }, {
-          text: "2Hotpink",
-          isInGroup: false,
-        }, {
-          text: "3Gold",
-          isInGroup: false,
-        }, {
-          text: "4Crimson",
-          isInGroup: false,
-        }, {
-          text: "5Blueviolet",
-          isInGroup: false,
-        }, {
-          text: "6Lightblue",
-          isInGroup: false,
-        }, {
-          text: "7Cornflowerblue",
-          isInGroup: false,
-        }, {
-          text: "8Skyblue",
-          isInGroup: false,
-        }, {
-          text: "9Burlywood",
-          isInGroup: false,
-        }]
+        colors: [
+          {text: "1Aquamarine"},
+          {text: "2Hotpink"},
+          {text: "3Gold"},
+          {text: "4Crimson"},
+          {text: "5Blueviolet"},
+          {text: "6Lightblue"},
+          {text: "7Cornflowerblue"},
+          {text: "8Skyblue"},
+          {text: "9Burlywood"},
+        ],
       }
     },
     mounted() {
+      this.colors.forEach((item) => {
+        Vue.set(item, 'isInGroup', false) // 是否选中
+        Vue.set(item, 'color', '#' + (Math.random() * 0xffffff << 0).toString(16)) // 随机背景色
+      })
+
       this.$dragging.$on('dragged', (obj) => {
         if (!this.groupArr.length) {
           this.groupArr = this.colors.filter(function (item) {
             return item.isInGroup
           })
         }
-        this.dragObj = obj.draged
-
         this.groupArr.forEach((item) => {
-          if (item != this.dragObj) {
+          if (item != obj.draged) {
             let oldIndex = this.colors.indexOf(item)
             this.colors.splice(oldIndex, 1)
           }
         })
 
-        let targetIndex = this.colors.indexOf(this.dragObj)
+        let targetIndex = this.colors.indexOf(obj.draged)
         if (this.groupArr.length) {
           this.colors.splice(targetIndex, 1, ...this.groupArr)
         }
       })
 
-      this.$dragging.$on('dragend', (obj) => {
+      this.$dragging.$on('dragend', () => { // 用户松手，整个拖拽步骤完成，重置变量
         this.colors.forEach((item) => {
           item.isInGroup = false
         })
         this.groupArr.splice(0)
       })
     },
-    methods: {
-      onClickGroupBtn(item) {
-        item.isInGroup = !item.isInGroup
-      }
-    }
   }
 </script>
 
