@@ -1,11 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
-import VueDND from 'awe-dnd'
+import VueDND from './vue-dragging'
 
 Vue.use(VueDND)
-
-let app = document.querySelector("#app")
-app.style.background = '#F00'
 
 
 new Vue({

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="color-list">
-      <div class="color-item" :style="{background: color.color}" v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'mycolorgroup' }" :key="color.text">
+      <div class="color-item" :style="{background: color.color}" v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }" :key="color.text">
         <div>{{color.text}}</div>
         <div class="add-group-btn" @click="onClickAddGroupBtn(color)">{{color.isInGroup?'x':''}}</div></div>
     </div>
@@ -14,6 +14,7 @@
     name: 'app',
     data() {
       return {
+        groupArr: [],
         colors: [
           {text: "1Aquamarine"},
           {text: "2Hotpink"},
@@ -34,32 +35,32 @@
       })
 
       this.$dragging.$on('dragged', (obj) => {
-        // this.groupArr.forEach((item) => {
-        //   if (item != obj.draged) {
-        //     let oldIndex = this.colors.indexOf(item)
-        //     this.colors.splice(oldIndex, 1)
-        //   }
-        // })
+        this.groupArr.forEach((item) => {
+          if (item != obj.draged) {
+            let oldIndex = this.colors.indexOf(item)
+            this.colors.splice(oldIndex, 1)
+          }
+        })
 
-        // let targetIndex = this.colors.indexOf(obj.draged)
-        // if (this.groupArr.length) {
-        //   this.colors.splice(targetIndex, 1, ...this.groupArr)
-        // }
+        let targetIndex = this.colors.indexOf(obj.draged)
+        if (this.groupArr.length) {
+          this.colors.splice(targetIndex, 1, ...this.groupArr)
+        }
       })
 
       this.$dragging.$on('dragend', () => { // 用户松手，整个拖拽步骤完成，重置变量
         this.colors.forEach((item) => {
           item.isInGroup = false
         })
-        // this.groupArr.splice(0)
+        this.groupArr.splice(0)
       })
     },
     methods: {
       onClickAddGroupBtn(item) {
         item.isInGroup = !item.isInGroup
-        // this.groupArr = this.colors.filter(function (item) {
-        //   return item.isInGroup
-        // })
+        this.groupArr = this.colors.filter(function (item) {
+          return item.isInGroup
+        })
       }
     }
   }
